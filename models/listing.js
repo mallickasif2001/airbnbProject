@@ -3,58 +3,35 @@ const Schema = mongoose.Schema;
 const Review = require("./review.js");
 
 const listingSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  description: String,
-
-  image: {
-    url: String,
-    filename: String,
-  },
-
-  price: {
-    type: Number,
-    required: true,
-  },
-
-  location: String,
-  country: String,
-
-  reviews: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Review",
+    title: {
+        type: String,
+        default: true,
     },
-  ],
-
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-
-  // ⭐ GEOJSON FIELD
-  geometry: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      required: true,
+    description: String,
+    image: {
+       url: String,
+       filename: String,
     },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      required: true,
+
+    price: Number,
+    location: String,
+    country: String,
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Review",
+        },
+    ],
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
     },
-  },
 });
 
-// ⭐ Very Important ➝ Add 2dsphere index for GeoJSON
-listingSchema.index({ geometry: "2dsphere" });
-
 listingSchema.post("findOneAndDelete", async (listing) => {
-  if (listing) {
-    await Review.deleteMany({ _id: { $in: listing.reviews } });
-  }
+    if (listing) {
+        await Review.deleteMany({ _id: { $in: listing.reviews } });
+    }
 });
 
 const Listing = mongoose.model("Listing", listingSchema);

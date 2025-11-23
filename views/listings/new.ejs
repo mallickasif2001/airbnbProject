@@ -1,193 +1,46 @@
-<% 
-// This page uses a common layout file so the header, footer, and base styling
-// come from /layouts/boilerplate.ejs. This keeps pages consistent.
-layout("/layouts/boilerplate") 
-%>
-
-<div class="row mt-4">
-  <div class="col-md-8 offset-md-2">
-
-    <h3 class="mb-3 text-center">Create a New Listing</h3>
-
-    <!-- 
-      Form for creating a listing.
-      method="POST" sends data to server.
-      action="/listings" → route where new listing is saved.
-      enctype="multipart/form-data" → required when uploading images.
-      novalidate + needs-validation → custom Bootstrap validation.
-    -->
-    <form
-      method="POST"
-      action="/listings"
-      novalidate
-      class="needs-validation"
-      enctype="multipart/form-data"
-    >
-
-      <!-- TITLE FIELD -->
-      <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-
-        <!-- 
-          name="listing[title]" → backend receives req.body.listing.title
-          required → form won’t submit if empty
-        -->
-        <input
-          id="title"
-          name="listing[title]"
-          type="text"
-          class="form-control"
-          placeholder="Add a catchy title"
-          required
-        />
-
-        <div class="invalid-feedback">Please provide a title.</div>
-      </div>
-
-
-      <!-- DESCRIPTION FIELD -->
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-
-        <!-- textarea for longer text input -->
-        <textarea
-          id="description"
-          name="listing[description]"
-          class="form-control"
-          rows="3"
-          placeholder="Describe your listing..."
-          required
-        ></textarea>
-
-        <div class="invalid-feedback">Please provide a description.</div>
-      </div>
-
-
-      <!-- IMAGE UPLOAD FIELD -->
-      <div class="mb-3">
-        <label for="image" class="form-label">Upload Listing Image</label>
-
-        <!-- 
-          type="file" → actual image upload
-          name="listing[image]" → backend will process this file using multer
-        -->
-        <input
-          name="listing[image]"
-          type="file"
-          class="form-control"
-        />
-        required
-      </div>
-
-
-      <!-- PRICE + COUNTRY FIELDS (IN ROW) -->
-      <div class="row">
-
-        <!-- PRICE -->
-        <div class="col-md-4 mb-3">
-          <label for="price" class="form-label">Price</label>
-
-          <!-- 
-            min="0" prevents negative price
-            placeholder just helps user understand format
-          -->
-          <input
-            id="price"
-            name="listing[price]"
-            type="text"
-            class="form-control"
-            placeholder="1500"
-            min="0"
-            required
-          />
-
-          <div class="invalid-feedback">Please provide a valid price.</div>
+<% layout("/layouts/boilerplate")%>
+    <div class="row">
+        <div class="col-8 offset-2">
+            <br><br>
+            <h2>Create a new listing</h2>
+            <br>
+            <form action="/listings" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input placeholder="Add a catchy title" type="text" name="listing[title]" class="form-control"
+                        required>
+                    <div class="valid-feedback">Title looks good!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="listing[description]" class="form-control" required> </textarea>
+                    <div class="invalid-feedback">Please enter a short Description!</div>
+                </div>
+                <div class="mb-3">
+                    <label for="image">Upload Listing Image</label>
+                    <input type="file" id="filename" name="listing[image]" required class="form-control">
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">Price</label>
+                        <input placeholder="1200" name="listing[price]" class="form-control" required>
+                        <div class="invalid-feedback"> Price should be valid!</div>
+                    </div>
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label">Country</label>
+                        <input placeholder="India" type="text" name="listing[country]" class="form-control" required>
+                        <div class="invalid-feedback">Country name should be valid!</div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input placeholder="Bihar, Patna" type="text" name="listing[location]" class="form-control"
+                        required>
+                    <div class="invalid-feedback">Location should be valid!</div>
+                </div>
+                <br>
+                <button class="btn btn-dark add-btn">Add</button>
+                <br><br>
+            </form>
         </div>
-
-
-        <!-- COUNTRY -->
-        <div class="col-md-8 mb-3">
-          <label for="country" class="form-label">Country</label>
-
-          <!-- user enters country name -->
-          <input
-            id="country"
-            name="listing[country]"
-            type="text"
-            class="form-control"
-            placeholder="India"
-            required
-          />
-
-          <div class="invalid-feedback">Please provide the country name.</div>
-        </div>
-      </div>
-
-
-      <!-- LOCATION INPUT -->
-      <div class="mb-3">
-        <label for="location" class="form-label">Location</label>
-
-        <input
-          id="location"
-          name="listing[location]"
-          type="text"
-          class="form-control"
-          placeholder="Patna, Bihar"
-          required
-        />
-
-        <div class="invalid-feedback">Please provide a location.</div>
-      </div>
-
-
-      <!-- SUBMIT BUTTON -->
-      <div class="text-center">
-        <button 
-          class="mt-3"
-          style="
-            background-color: #e63946;
-            color: white;
-            border: none;
-            padding: 8px 28px;
-            border-radius: 4px;
-            font-weight: 500;
-            letter-spacing: .5px;
-          "
-        >
-          Add
-        </button>
-      </div>
-
-    </form>
-  </div>
-</div>
-
-
-<!-- BOOTSTRAP FRONTEND VALIDATION SCRIPT -->
-<script>
-  (() => {
-    "use strict";
-
-    // Select all forms using .needs-validation
-    const forms = document.querySelectorAll(".needs-validation");
-
-    // Apply validation on submit for each form
-    Array.from(forms).forEach((form) => {
-      form.addEventListener(
-        "submit",
-        (event) => {
-          // If any required field is invalid
-          if (!form.checkValidity()) {
-            event.preventDefault();   // stop submit
-            event.stopPropagation();  // stop further actions
-          }
-
-          // Add 'was-validated' to show UI feedback
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-</script>
+    </div>

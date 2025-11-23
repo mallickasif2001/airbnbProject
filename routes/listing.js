@@ -20,10 +20,6 @@ router
   );
 
 
-// POSITIONSTACK COORD ROUTE (Add Here)
-router.get("/get-coordinates", wrapAsync(listingController.getCoordinates));
-
-
 // NEW ROUTE
 router.get("/new", isLoggedIn, listingController.renderNewForm);
 
@@ -37,6 +33,7 @@ router
     validateListing,
     wrapAsync(listingController.updateListing)
   )
+  
   .delete(
     isLoggedIn,
     isOwner,
