@@ -1,0 +1,143 @@
+<% 
+// Using a layout file so this page inherits header, footer, styling
+// This avoids repeating the same boilerplate on every page
+layout("/layouts/boilerplate") 
+%>
+
+<div class="row mt-3">
+  <div class="col-8 offset-2">
+
+    <h3>Edit your Listing</h3>
+
+    <!-- 
+      Form for updating an existing listing 
+      PUT method is not allowed directly in forms, so we use method-override
+      "?_method=PUT" tells the server to treat this POST request as PUT
+    -->
+    <form 
+      method="POST" 
+      action="/listings/<%= listing._id %>?_method=PUT" 
+      novalidate 
+      class="needs-validation"
+      enctype="multipart/form-data"
+    >
+
+      <!-- TITLE INPUT -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+
+        <!-- 
+          name="listing[title]"  
+          -> This ensures req.body.listing.title is created in backend
+          value="<%= listing.title %>" 
+          -> Pre-fills the current listing title
+        -->
+        <input 
+          name="listing[title]"
+          value="<%= listing.title %>"
+          type="text"
+          class="form-control"
+          required
+        />
+
+        <!-- Bootstrap invalid message -->
+        <div class="invalid-feedback">Please provide a title.</div>
+      </div>
+
+
+      <!-- DESCRIPTION INPUT -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+
+        <!-- textarea for listing description -->
+        <textarea 
+          name="listing[description]" 
+          class="form-control" 
+          required
+        ><%= listing.description %></textarea>
+
+        <div class="invalid-feedback">Please provide a description.</div>
+      </div>
+
+      <div class="mb-3">
+        Original Listing Image  <br />
+        <img src="<%= originalImageUrl %>" alt="Listing Image" width="200"/>
+      </div>
+
+
+      <!-- IMAGE URL INPUT -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Upload New Image</label>
+
+        <!-- storing image URL as a simple text input -->
+        <input 
+          name="listing[image]" 
+          type="file"
+          class="form-control"
+        />
+      </div>
+
+
+      <!-- PRICE + COUNTRY ROW -->
+      <div class="row">
+
+        <!-- PRICE -->
+        <div class="mb-3 col-md-4">
+          <label for="price" class="form-label">Price</label>
+
+          <!-- takes price value from listing -->
+          <input 
+            name="listing[price]"
+            value="<%= listing.price %>"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <div class="invalid-feedback">Price should be valid.</div>
+        </div>
+
+
+        <!-- COUNTRY -->
+        <div class="mb-3 col-md-8">
+          <label for="country" class="form-label">Country</label>
+
+          <!-- user enters country name -->
+          <input 
+            name="listing[country]"
+            value="<%= listing.country %>"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <div class="invalid-feedback">Please provide the country name.</div>
+        </div>
+
+      </div>
+
+
+      <!-- LOCATION INPUT -->
+      <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+
+        <input 
+          name="listing[location]"
+          value="<%= listing.location %>"
+          type="text"
+          class="form-control"
+          required
+        />
+
+        <div class="invalid-feedback">Please provide a location.</div>
+      </div>
+      
+      <br /><br />
+
+      <!-- Submit button for editing -->
+      <button class="btn btn-dark edit-btn mt-3">Edit</button>
+
+    </form>
+
+  </div>
+</div>
